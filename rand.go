@@ -6,7 +6,6 @@ package rand
 
 import (
 	"crypto/rand"
-	"fmt"
 	"unsafe"
 
 	"github.com/klauspost/cpuid"
