@@ -10,15 +10,22 @@ TEXT ·Abs(SB),NOSPLIT,$0
     RET
 
 
-//; func rnd(x, y int64) complex128
-TEXT ·ComplexRand2(SB),NOSPLIT,$0
-	MOVQ a+0(FP), SI   //; Random float1
-	MOVQ a+8(FP), CX   //; Random float2
-	MOVQ $0xBFFFFFFFFFFFFFFF, DX
-    ANDQ DX, SI
-    ANDQ DX, CX
-	MOVQ SI, a+16(FP)  //; Complex return part 1
-	MOVQ CX, a+24(FP)  //; Complex return part 2
+//; func ComplexRand(x, y int64) complex128
+TEXT ·complexRand(SB),NOSPLIT,$0
+	MOVQ a+0(FP), SI   //; pointer to Random float1
+	MOVQ 0(SI), AX
+	MOVQ $0x5851f42d4c957f2d, BX
+	MOVQ $0xBFFFFFFFFFFFFFFF, DI
+	MULQ BX        
+	INCQ AX 
+	MOVQ AX, CX
+	ANDQ DI, CX
+	MULQ BX        
+	INCQ AX 
+	MOVQ AX, 0(SI)     //; Update seed	
+	ANDQ DI, AX
+	MOVQ CX, a+8(FP)   //; Complex return part 1
+	MOVQ AX, a+16(FP)  //; Complex return part 2
 	RET
 
 
@@ -257,3 +264,5 @@ mainLoopAVX:
 
 	RET
 ///;### End AVX use	
+
+

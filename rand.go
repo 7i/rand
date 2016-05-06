@@ -13,7 +13,7 @@ import (
 
 const (
 	// Must be dividable by 16
-	complexBufSize = 8192
+	complexBufSize = 256
 )
 
 // Function GetSeed returns a 64-bit NIST SP800-90B & C compliant random value from a call to RDSEED.
@@ -121,14 +121,15 @@ func (rng *ComplexRNG) Complex128Go() complex128 {
 // Method Complex128 returns a random complex128 in the range (-2 - 2, -2 - 2).
 // This method is NOT Thread Safe, initiate one ComplexRNG per goroutine.
 func (rng *ComplexRNG) Complex128() (c complex128) {
+	i := rng.index
 	// Intel Static Branch Prediction: A forward branch defaults to not taken and a backward branch defaults to taken.
-	if rng.index < complexBufSize {
+	if i < complexBufSize {
 		rng.index++
-		return rng.buffer[rng.index-1]
+		return rng.buffer[i]
 	}
 	switch {
 	case rng.cpu == 0:
-		fillavx2(rng.buffer, rng.seedbuf) // will update seed and all elements in buffer
+		fillavx2(rng.buffer, rng.seedbuf)
 	case rng.cpu == 1:
 		fillavx(rng.buffer, rng.seedbuf)
 	default:
@@ -150,7 +151,13 @@ func fillavx2(buf []complex128, seedbuf []uint32)
 // ComplexRand returns a pseudo-random complex128 where the imag and real part is in the range -2 to 2.
 // The random values are evenly distributed between all possible floats in the specified range, this makes
 // it very lightly to get a very small number very close to 0 as the densety of valid floats are much denser near 0.
-func ComplexRand(x, y int64) complex128
+// Eg. The probability of getting a real part that is over 1 or lower than -1 is about 0.1% and the probability of
+// getting a real part in between 1.0e-150 and -1.0e-150 is about 50%.
+func (rng *ComplexRNG) ComplexRand() complex128 {
+	return complexRand(&rng.seed)
+}
+
+func complexRand(addr *int64) complex128
 
 func Abs(x float64) float64
 
