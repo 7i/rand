@@ -144,10 +144,6 @@ func (rng *ComplexRNG) Complex128() (c complex128) {
 // Function AddUint64 returns the new and old value after adding delta, this function is executed atomicly.
 func AddUint64(addr *uint64, delta uint64) (new, old uint64)
 
-func fillavx(buf []complex128, seedbuf []uint32)
-
-func fillavx2(buf []complex128, seedbuf []uint32)
-
 // ComplexRand returns a pseudo-random complex128 where the imag and real part is in the range -2 to 2.
 // The random values are evenly distributed between all possible floats in the specified range, this makes
 // it very lightly to get a very small number very close to 0 as the densety of valid floats are much denser near 0.
@@ -157,9 +153,13 @@ func (rng *ComplexRNG) ComplexRand() complex128 {
 	return complexRand(&rng.seed)
 }
 
-func complexRand(addr *int64) complex128
-
 func Abs(x float64) float64
+
+func fillavx(buf []complex128, seedbuf []uint32)
+
+func fillavx2(buf []complex128, seedbuf []uint32)
+
+func complexRand(addr *int64) complex128
 
 // Function getRdSeed tries to get a random number via RDSEED instruction in the CPU.
 func getRdSeed() (a int64, fail bool)

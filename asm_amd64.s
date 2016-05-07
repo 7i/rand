@@ -97,17 +97,17 @@ TEXT ·fillavx2(SB),NOSPLIT,$0
 	//;  a+40(FP)       //; Capacity of seedbuff not used
  	MOVQ $256, BX
 
-	VMOVDQA		   (CX), Y1		//; Move 256bits in to Y4 containing 8 32bit seed numbers
-	VMOVDQA		 32(CX), Y2		//; Move 256bits in to Y4 containing 8 32bit seed numbers
-	VMOVDQA		 64(CX), Y3		//; Move 256bits in to Y4 containing 8 32bit seed numbers
-	VMOVDQA		 96(CX), Y4		//; Move 256bits in to Y4 containing 8 32bit seed numbers
+	VMOVDQA        (CX), Y1     //; Move 256bits in to Y4 containing 8 32bit seed numbers
+	VMOVDQA      32(CX), Y2     //; Move 256bits in to Y4 containing 8 32bit seed numbers
+	VMOVDQA      64(CX), Y3     //; Move 256bits in to Y4 containing 8 32bit seed numbers
+	VMOVDQA      96(CX), Y4     //; Move 256bits in to Y4 containing 8 32bit seed numbers
 
-	VMOVDQA 	128(CX), Y13  	//; Move 256bits in to Y13 containing 8 32bit increment numbers
-	VMOVDQA 	160(CX), Y14  	//; Move 256bits in to Y14 containing 8 32bit multiplier numbers
+	VMOVDQA     128(CX), Y13    //; Move 256bits in to Y13 containing 8 32bit increment numbers
+	VMOVDQA     160(CX), Y14    //; Move 256bits in to Y14 containing 8 32bit multiplier numbers
 
 ///### Unsuported instructions in Go
 	BYTE $0xC4; BYTE $0x63; BYTE $0x7D; BYTE $0x19; BYTE $0xE8; BYTE $0x01	//; VEXTRACTF128 $1, Y13, X0	//; Copy high 128 bits of Y13 in to X0 for use in VDIVPD
-	BYTE $0xC5; BYTE $0xF9; BYTE $0x72; BYTE $0xF0; BYTE $0x1E  			//; VPSLLD		 $30, X0, X0	//; X0 now contains 4 int32 with the value (1<<30)
+	VPSLLD $30, X0, X0                                                      //; X0 now contains 4 int32 with the value (1<<30)
 	BYTE $0xC5; BYTE $0xFE; BYTE $0xE6; BYTE $0xC0							//; VCVTDQ2PD	 X0, Y0			//; Y0 now contains 4 float64 with the value (1<<30)
 
 mainLoopAVX2:	
@@ -116,10 +116,10 @@ mainLoopAVX2:
 	BYTE $0xC4; BYTE $0xC2; BYTE $0x65; BYTE $0x40; BYTE $0xDE				//; VPMULLD		 Y14, Y3, Y3
 	BYTE $0xC4; BYTE $0xC2; BYTE $0x5D; BYTE $0x40; BYTE $0xE6				//; VPMULLD		 Y14, Y4, Y4
 
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x75; BYTE $0xFE; BYTE $0xCD				//; VPADDD		 Y14, Y1, Y1  
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x6D; BYTE $0xFE; BYTE $0xD5				//; VPADDD		 Y14, Y2, Y2  
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x65; BYTE $0xFE; BYTE $0xDD				//; VPADDD		 Y14, Y3, Y3  
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x5D; BYTE $0xFE; BYTE $0xE5				//; VPADDD		 Y14, Y4, Y4  
+	VPADDD Y14, Y1, Y1  
+	VPADDD Y14, Y2, Y2  
+	VPADDD Y14, Y3, Y3  
+	VPADDD Y14, Y4, Y4  
 
 	VMOVDQA Y1, Y5
 	VMOVDQA Y2, Y6
@@ -195,7 +195,7 @@ TEXT ·fillavx(SB),NOSPLIT,$0
 	VMOVDQA 	160(CX), X14  	//; Move 128bits in to X14 containing 4 32bit multiplier numbers
 
 	VMOVDQA		X15, X13  	
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x11; BYTE $0x72; BYTE $0xF5; BYTE $0x1E; // VPSLLD 		$30, X13  
+	VPSLLD 		$30, X13 , X13 
 	BYTE $0xC4; BYTE $0x41; BYTE $0x7E; BYTE $0xE6; BYTE $0xED; 			// VCVTDQ2PD 	X13, Y13 
 	//; Y13 now contains 4 float64 with the value (1<<30), later used with VDIVPD
 
@@ -209,14 +209,14 @@ mainLoopAVX:
 	PMULLD X14, X6
 	PMULLD X14, X7
 
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x79; BYTE $0xFE; BYTE $0xC7; // VPADDD X15, X0, X0
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x71; BYTE $0xFE; BYTE $0xCF; // VPADDD X15, X1, X1
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x69; BYTE $0xFE; BYTE $0xD7; // VPADDD X15, X2, X2
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x61; BYTE $0xFE; BYTE $0xDF; // VPADDD X15, X3, X3
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x59; BYTE $0xFE; BYTE $0xE7; // VPADDD X15, X4, X4
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x51; BYTE $0xFE; BYTE $0xEF; // VPADDD X15, X5, X5
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x49; BYTE $0xFE; BYTE $0xF7; // VPADDD X15, X6, X6
-	BYTE $0xC4; BYTE $0xC1; BYTE $0x41; BYTE $0xFE; BYTE $0xFF; // VPADDD X15, X7, X7
+	VPADDD X15, X0, X0
+	VPADDD X15, X1, X1
+	VPADDD X15, X2, X2
+	VPADDD X15, X3, X3
+	VPADDD X15, X4, X4
+	VPADDD X15, X5, X5
+	VPADDD X15, X6, X6
+	VPADDD X15, X7, X7
 
 	BYTE $0xC5; BYTE $0x7E; BYTE $0xE6; BYTE $0xC0 // VCVTDQ2PD X0, Y8
 	BYTE $0xC5; BYTE $0x7E; BYTE $0xE6; BYTE $0xC9 // VCVTDQ2PD X1, Y9
