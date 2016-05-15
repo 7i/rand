@@ -81,7 +81,7 @@ TEXT ·uint32Align32(SB),NOSPLIT,$0
 	MOVQ         a+8(FP), AX       //; Length of buf
 	//           a+16(FP)          //; Capacity, not used
 	ADDQ         $32, SI
-	ANDQ         $~31, SI          //; Align 32
+	ANDQ         $-32, SI          //; Align 32
 	SUBQ         $32, AX           //; Length - 32
 	SHRQ         $2, AX            //; Divide by 4 to get length in uint32 instead of bytes
 	MOVQ         SI, new+24(FP)    //; Pointer to buffer
