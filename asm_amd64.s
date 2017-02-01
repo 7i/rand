@@ -178,7 +178,7 @@ mainLoopAVX2:
 ///;### End AVX2 use
 
 
-//; func fillavx(buf []complex128, seedbuf []uint32)
+//; func fillavx(buf []complex128, seedbuf []uint32) // No longer used, only kept for historical reasons 
 TEXT ·fillavx(SB),NOSPLIT,$0
 ///;### For AVX use
 	MOVQ         a+0(FP), SI       //; Pointer to buffer
