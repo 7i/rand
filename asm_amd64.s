@@ -10,7 +10,7 @@ TEXT ·Abs(SB),NOSPLIT,$0
 	RET
 
 
-//; func ComplexRand(x, y int64) complex128
+//; func ComplexRand(x, y int64) complex128 // No longer used, only kept for historical reasons 
 TEXT ·complexRand(SB),NOSPLIT,$0
 	MOVQ         a+0(FP), SI       //; pointer to Random float1
 	MOVQ         0(SI), AX
@@ -61,7 +61,7 @@ TEXT ·AddUint64(SB),NOSPLIT,$0-24
 	MOVQ         CX, new+16(FP)    //; Set first return value to the new int64 value 
 	RET
 
-
+// No longer used, only kept for historical reasons 
 TEXT ·complex128Align32(SB),NOSPLIT,$0
 	MOVQ         addr+0(FP), SI    //; Pointer to buf
 	MOVQ         a+8(FP), AX       //; Length of buf
@@ -75,7 +75,7 @@ TEXT ·complex128Align32(SB),NOSPLIT,$0
 	MOVQ         AX, new+40(FP)    //; Capacity of new slice
 	RET
 
-
+// No longer used, only kept for historical reasons 
 TEXT ·uint32Align32(SB),NOSPLIT,$0
 	MOVQ         addr+0(FP), SI    //; Pointer to buf
 	MOVQ         a+8(FP), AX       //; Length of buf
@@ -90,7 +90,7 @@ TEXT ·uint32Align32(SB),NOSPLIT,$0
 	RET
 
 
-//; func fillavx2(buf []complex128, seedbuf []uint32)
+//; func fillavx2(buf []complex128, seedbuf []uint32) // No longer used, only kept for historical reasons 
 TEXT ·fillavx2(SB),NOSPLIT,$0
 ///;### For AVX2 use 
 	MOVQ         a+0(FP), SI       //; Pointer to buffer
